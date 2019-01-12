@@ -1,6 +1,13 @@
 package com.hackerrank.github.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "actor")
 public class Actor {
+
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
     private String login;
     private String avatar;

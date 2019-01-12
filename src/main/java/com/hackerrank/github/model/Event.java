@@ -1,12 +1,23 @@
 package com.hackerrank.github.model;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
 
+@Entity
+@Table(name = "event")
 public class Event {
+
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
     private String type;
+
+    @OneToOne
     private Actor actor;
+
+    @OneToOne
     private Repo repo;
+
     private Timestamp createdAt;
 
     public Event() {
