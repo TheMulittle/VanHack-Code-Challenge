@@ -68,11 +68,14 @@ public class GithubApiRestController {
     @PutMapping(value = "/actors", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public void updateAvatar(@RequestBody Actor actor) throws NotFound, InvalidUpdate {
-        if(actorRepository.findOne(actor.getId()) == null)
+        Actor actorInDb = actorRepository.findOne(actor.getId());
+        if(actorInDb == null)
             throw new NotFound("Actor with id: [" + actor.getId() + "] not found");
 
-        if(actor.getLogin() != null)
+        if(!actor.getLogin().equals(actorInDb.getLogin()))
             throw new InvalidUpdate("Actor with id: [" + actor.getId() + "] cannot update fields other than avatar");
+
+        actorRepository.saveAndFlush(actor);
 
     }
 
