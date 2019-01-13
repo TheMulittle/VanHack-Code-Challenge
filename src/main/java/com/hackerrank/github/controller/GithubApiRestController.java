@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -76,12 +77,39 @@ public class GithubApiRestController {
     @GetMapping(value = "/actors", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public List<Actor> retrieveActors() {
-        return actorRepository.findAll();
+        List<Actor> actors = actorRepository.findAll();
+
+        actors.sort(getComparatorByActorsAscTimestampDescLoginAsc());
+
+        return actors;
     }
 
     @GetMapping(value = "/actors/streak", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public List<Actor> retrieveActorsByStreak() {
         return actorRepository.findAll();
+    }
+
+    Comparator<Actor> getComparatorByActorsAscTimestampDescLoginAsc() {
+
+        Comparator<Actor> comp = (a1, a2) -> {
+            int compareByNumEvents = eventRepository.countByActorId(a1.getId()) - eventRepository.countByActorId(a2.getId());
+            int compareByDate;
+            if (compareByNumEvents == 0) {
+
+                compareByDate = eventRepository.findFirstByActorIdOrderByCreatedAtDesc(a2.getId()).getCreatedAt().
+                        compareTo(eventRepository.findFirstByActorIdOrderByCreatedAtDesc(a1.getId()).getCreatedAt());
+
+                if(compareByDate == 0) {
+                    return a1.getLogin().compareTo(a2.getLogin());
+                }
+
+                return compareByDate;
+            }
+
+            return compareByNumEvents;
+        };
+
+        return comp;
     }
 }
