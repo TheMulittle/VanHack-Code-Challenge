@@ -1,6 +1,12 @@
 package com.hackerrank.github.model;
 
-import javax.persistence.*;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.sql.Timestamp;
 
 @Entity
@@ -8,14 +14,15 @@ import java.sql.Timestamp;
 public class Event {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
     private String type;
 
     @OneToOne
+    @Cascade(CascadeType.PERSIST)
     private Actor actor;
 
     @OneToOne
+    @Cascade(CascadeType.PERSIST)
     private Repo repo;
 
     private Timestamp createdAt;

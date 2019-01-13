@@ -3,7 +3,9 @@ package com.hackerrank.github.controller;
 import com.hackerrank.github.exepctions.AlreadyRegisteredException;
 import com.hackerrank.github.model.Actor;
 import com.hackerrank.github.model.Event;
+import com.hackerrank.github.repository.ActorRepository;
 import com.hackerrank.github.repository.EventRepository;
+import com.hackerrank.github.repository.RepoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,12 @@ public class GithubApiRestController {
     @Autowired
     EventRepository eventRepository;
 
+    @Autowired
+    ActorRepository actorRepository;
+
+    @Autowired
+    RepoRepository repoRepository;
+
     @DeleteMapping("/erase")
     @ResponseStatus(HttpStatus.OK)
     public void eraseAllEvents() {
@@ -31,6 +39,8 @@ public class GithubApiRestController {
         if(eventRepository.findOne(event.getId()) != null)
             throw new AlreadyRegisteredException("Event id: " + event.getId() + " already registered");
 
+        actorRepository.saveAndFlush(event.getActor());
+        repoRepository.saveAndFlush(event.getRepo());
         eventRepository.saveAndFlush(event);
     }
 
