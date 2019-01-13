@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findAllByOrderByIdAsc();
     List<Event> findAllByActorIdOrderByIdAsc(Long actorId);
+    List<Event> findAllByActorIdOrderByCreatedAtAsc(Long actorId);
     int countByActorId(Long actorId);
     Event findFirstByActorIdOrderByCreatedAtDesc(Long id);
 }

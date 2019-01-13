@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -87,7 +89,9 @@ public class GithubApiRestController {
     @GetMapping(value = "/actors/streak", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public List<Actor> retrieveActorsByStreak() {
-        return actorRepository.findAll();
+        List<Actor> actors = actorRepository.findAll();
+        actors.sort(comp());
+        return actors;
     }
 
     Comparator<Actor> getComparatorByActorsAscTimestampDescLoginAsc() {
@@ -111,5 +115,51 @@ public class GithubApiRestController {
         };
 
         return comp;
+    }
+
+    Comparator<Actor> comp() {
+
+        Comparator<Actor> comp = (a1, a2) -> {
+            List<Event> e1 = eventRepository.findAllByActorIdOrderByCreatedAtAsc(a1.getId());
+            List<Event> e2 = eventRepository.findAllByActorIdOrderByCreatedAtAsc(a2.getId());
+            int compareByStreak = calcMaximumStreak(e1) - calcMaximumStreak(e2);
+
+            if (compareByStreak == 0) {
+
+                int compareByDate = eventRepository.findFirstByActorIdOrderByCreatedAtDesc(a2.getId()).getCreatedAt().
+                        compareTo(eventRepository.findFirstByActorIdOrderByCreatedAtDesc(a1.getId()).getCreatedAt());
+
+                if (compareByDate == 0) {
+                    return a1.getLogin().compareTo(a2.getLogin());
+                }
+
+                return compareByDate;
+            }
+
+            return compareByStreak;
+        };
+
+        return comp;
+    }
+
+    private int calcMaximumStreak(List<Event> events) {
+
+        int maxStreak = 0;
+        int actualStreak = 0;
+        for(int i = 1; i < events.size(); i++) {
+            LocalDateTime dateEvent1 = events.get(i-1).getCreatedAt().toLocalDateTime().withHour(0).withMinute(0).withSecond(0).plusDays(1);
+            LocalDateTime dateEvent2 = events.get(i).getCreatedAt().toLocalDateTime().withHour(0).withMinute(0).withSecond(0);
+            if(dateEvent1.isEqual(dateEvent2)) {
+                actualStreak += 1;
+            } else {
+                actualStreak = 0;
+            }
+
+            if(actualStreak > maxStreak) {
+                maxStreak = actualStreak;
+            }
+        }
+
+        return maxStreak;
     }
 }
