@@ -100,7 +100,7 @@ public class GithubApiRestController {
     Comparator<Actor> getComparatorByActorsAscTimestampDescLoginAsc() {
 
         Comparator<Actor> comp = (a1, a2) -> {
-            int compareByNumEvents = eventRepository.countByActorId(a1.getId()) - eventRepository.countByActorId(a2.getId());
+            int compareByNumEvents = eventRepository.countByActorId(a2.getId()) - eventRepository.countByActorId(a1.getId());
             int compareByDate;
             if (compareByNumEvents == 0) {
 
