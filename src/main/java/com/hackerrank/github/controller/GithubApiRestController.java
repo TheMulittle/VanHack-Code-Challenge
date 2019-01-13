@@ -49,7 +49,7 @@ public class GithubApiRestController {
         eventRepository.saveAndFlush(event);
     }
 
-    @GetMapping(value = "/events", consumes = "application/json", produces = "application/json")
+    @GetMapping(value = "/events", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public List<Event> retrieveEvents(@RequestBody Event event) {
         return eventRepository.findAllByOrderByIdAsc();
