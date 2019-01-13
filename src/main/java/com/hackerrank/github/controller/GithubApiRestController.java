@@ -47,7 +47,7 @@ public class GithubApiRestController {
     @GetMapping(value = "/events", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public List<Event> retrieveEvents(@RequestBody Event event) {
-        return eventRepository.findAll(new Sort(Sort.Direction.ASC, "id"));
+        return eventRepository.findAllByOrderByIdAsc();
     }
 
     @PutMapping(value = "/actors", consumes = "application/json")
@@ -59,7 +59,7 @@ public class GithubApiRestController {
     @GetMapping(value = "/actors", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public void retrieveActors() {
-
+        
     }
 
     @GetMapping(value = "/actors/streak", produces = "application/json")
