@@ -1,6 +1,7 @@
 package com.hackerrank.github.controller;
 
 import com.hackerrank.github.exepctions.AlreadyRegisteredException;
+import com.hackerrank.github.exepctions.NotFound;
 import com.hackerrank.github.model.Actor;
 import com.hackerrank.github.model.Event;
 import com.hackerrank.github.repository.ActorRepository;
@@ -50,6 +51,16 @@ public class GithubApiRestController {
         return eventRepository.findAllByOrderByIdAsc();
     }
 
+    @GetMapping(value = "/events/actors/{actorID}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Event> retrieveEventsByActor(@PathVariable("actorID") Long actorId) throws NotFound {
+
+        if(actorRepository.findOne(actorId) == null)
+            throw new NotFound("Actor with id: [" + actorId + "] not found");
+
+        return eventRepository.findAllByActorIdOrderByIdAsc(actorId);
+    }
+
     @PutMapping(value = "/actors", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public void updateAvatar(@RequestBody Actor actor) {
@@ -59,7 +70,7 @@ public class GithubApiRestController {
     @GetMapping(value = "/actors", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public void retrieveActors() {
-        
+
     }
 
     @GetMapping(value = "/actors/streak", produces = "application/json")
