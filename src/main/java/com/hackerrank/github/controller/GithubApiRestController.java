@@ -75,13 +75,13 @@ public class GithubApiRestController {
 
     @GetMapping(value = "/actors", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public void retrieveActors() {
-
+    public List<Actor> retrieveActors() {
+        return actorRepository.findAll();
     }
 
     @GetMapping(value = "/actors/streak", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public void retrieveActorsByStreak() {
-
+    public List<Actor> retrieveActorsByStreak() {
+        return actorRepository.findAll();
     }
 }
