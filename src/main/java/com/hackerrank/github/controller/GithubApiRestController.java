@@ -127,7 +127,7 @@ public class GithubApiRestController {
         Comparator<Actor> comp = (a1, a2) -> {
             List<Event> e1 = eventRepository.findAllByActorIdOrderByCreatedAtAsc(a1.getId());
             List<Event> e2 = eventRepository.findAllByActorIdOrderByCreatedAtAsc(a2.getId());
-            int compareByStreak = calcMaximumStreak(e1) - calcMaximumStreak(e2);
+            int compareByStreak = calcMaximumStreak(e2) - calcMaximumStreak(e1);
 
             if (compareByStreak == 0) {
 
