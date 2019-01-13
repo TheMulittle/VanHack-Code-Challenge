@@ -28,12 +28,10 @@ public class GithubApiRestController {
     @ResponseStatus(HttpStatus.CREATED)
     public void addEvent(@RequestBody Event event) throws AlreadyRegisteredException {
 
-        try {
-            eventRepository.findOne(event.getId());
+        if(eventRepository.findOne(event.getId()) != null)
             throw new AlreadyRegisteredException("Event id: " + event.getId() + " already registered");
-        } catch(EntityNotFoundException e) {
-            eventRepository.saveAndFlush(event);
-        }
+
+        eventRepository.saveAndFlush(event);
     }
 
     @GetMapping(value = "/events", consumes = "application/json", produces = "application/json")
