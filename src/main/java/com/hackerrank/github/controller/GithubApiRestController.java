@@ -1,6 +1,7 @@
 package com.hackerrank.github.controller;
 
 import com.hackerrank.github.exepctions.AlreadyRegisteredException;
+import com.hackerrank.github.exepctions.InvalidUpdate;
 import com.hackerrank.github.exepctions.NotFound;
 import com.hackerrank.github.model.Actor;
 import com.hackerrank.github.model.Event;
@@ -63,7 +64,12 @@ public class GithubApiRestController {
 
     @PutMapping(value = "/actors", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public void updateAvatar(@RequestBody Actor actor) {
+    public void updateAvatar(@RequestBody Actor actor) throws NotFound, InvalidUpdate {
+        if(actorRepository.findOne(actor.getId()) == null)
+            throw new NotFound("Actor with id: [" + actor.getId() + "] not found");
+
+        if(actor.getLogin() != null)
+            throw new InvalidUpdate("Actor with id: [" + actor.getId() + "] cannot update fields other than avatar");
 
     }
 
