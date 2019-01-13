@@ -35,6 +35,8 @@ public class GithubApiRestController {
     @ResponseStatus(HttpStatus.OK)
     public void eraseAllEvents() {
         eventRepository.deleteAll();
+        actorRepository.deleteAll();
+        repoRepository.deleteAll();
     }
 
     @PostMapping("/events")
