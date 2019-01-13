@@ -51,7 +51,7 @@ public class GithubApiRestController {
 
     @GetMapping(value = "/events", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public List<Event> retrieveEvents(@RequestBody Event event) {
+    public List<Event> retrieveEvents() {
         return eventRepository.findAllByOrderByIdAsc();
     }
 
